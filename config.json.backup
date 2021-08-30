@@ -1,0 +1,9 @@
+{
+  "TELEGRAM_BOT_TOKEN": "",
+  "TELEGRAM_CHAT_ID": "",
+
+  "CRON_EXPRESSION": "* * * * *",
+
+  "ETHEREUM_GAS_API_WITH_API_KEY": "https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=???????",
+  "GAS_PRICE_BASE": 50
+}
