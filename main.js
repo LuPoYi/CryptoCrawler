@@ -16,18 +16,22 @@ const CronJob = require('cron').CronJob
 // telegram bot
 const TelegramBot = require('node-telegram-bot-api')
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true })
+// bot.on('polling_error', console.log)
+
 bot.on('message', (msg) => {
   const chatId = msg.chat.id
 
-  if (msg === 'gas') {
+  if (msg.text === 'gas') {
     fetch(ETHEREUM_GAS_API_WITH_API_KEY)
       .then((res) => res.json())
       .then(
-        (result) => {
-          if (result?.message === 'OK')
+        (response) => {
+          const { message, result } = response || {}
+          const { SafeGasPrice, ProposeGasPrice, FastGasPrice } = result || {}
+          if (message === 'OK')
             bot.sendMessage(
               chatId,
-              `Current Ethereum Gas ${result?.result?.SafeGasPrice}, ${result?.result?.ProposeGasPrice}, ${result?.result?.ProposeGasPrice}`
+              `Current Ethereum Gas: ${SafeGasPrice}, ${ProposeGasPrice}, ${FastGasPrice}`
             )
         },
         (error) => console.log('fetch api error', error)
