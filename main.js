@@ -18,7 +18,21 @@ const TelegramBot = require('node-telegram-bot-api')
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true })
 bot.on('message', (msg) => {
   const chatId = msg.chat.id
-  bot.sendMessage(chatId, `Received your message ${msg.text} ${chatId}`)
+
+  if (msg === 'gas') {
+    fetch(ETHEREUM_GAS_API_WITH_API_KEY)
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          if (result?.message === 'OK')
+            bot.sendMessage(
+              chatId,
+              `Current Ethereum Gas ${result?.result?.SafeGasPrice}, ${result?.result?.ProposeGasPrice}, ${result?.result?.ProposeGasPrice}`
+            )
+        },
+        (error) => console.log('fetch api error', error)
+      )
+  }
 })
 
 // node-fetch
