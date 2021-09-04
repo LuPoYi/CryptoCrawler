@@ -16,8 +16,11 @@ const CronJob = require('cron').CronJob
 // telegram bot
 const TelegramBot = require('node-telegram-bot-api')
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true })
-// bot.on('polling_error', console.log)
 
+// node-fetch
+const fetch = require('node-fetch')
+
+// telgram bot listener
 bot.on('message', (msg) => {
   const chatId = msg.chat.id
 
@@ -39,9 +42,6 @@ bot.on('message', (msg) => {
   }
 })
 
-// node-fetch
-const fetch = require('node-fetch')
-
 // 每半小時最多推一次
 let lastSentAt = Date.now() - 31 * 60 * 1000
 
@@ -51,12 +51,12 @@ const crawler = () => {
     .then(
       (result) => {
         if (result?.message === 'OK') {
-          const safeGasPrice = parseInt(result?.result?.SafeGasPrice)
+          const safeGasPrice = Number(result?.result?.SafeGasPrice)
           const now = Date.now()
 
           if (safeGasPrice < GAS_PRICE_BASE && lastSentAt < now - 30 * 60 * 1000) {
             lastSentAt = now
-            bot.sendMessage(TELEGRAM_CHAT_ID, `safeGasPrice is ${safeGasPrice}`)
+            bot.sendMessage(TELEGRAM_CHAT_ID, `Current Safe Gas Price: ${safeGasPrice}`)
           }
         }
       },
